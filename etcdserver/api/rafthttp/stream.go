@@ -25,12 +25,12 @@ import (
 	"sync"
 	"time"
 
-	stats "go.etcd.io/etcd/etcdserver/api/v2stats"
-	"go.etcd.io/etcd/pkg/httputil"
-	"go.etcd.io/etcd/pkg/transport"
-	"go.etcd.io/etcd/pkg/types"
-	"go.etcd.io/etcd/raft/raftpb"
-	"go.etcd.io/etcd/version"
+	stats "lucastetreault/did-tangaroa/etcdserver/api/v2stats"
+	"lucastetreault/did-tangaroa/pkg/httputil"
+	"lucastetreault/did-tangaroa/pkg/transport"
+	"lucastetreault/did-tangaroa/pkg/types"
+	"lucastetreault/did-tangaroa/raft/raftpb"
+	"lucastetreault/did-tangaroa/version"
 
 	"github.com/coreos/go-semver/semver"
 	"go.uber.org/zap"
@@ -93,7 +93,7 @@ var (
 )
 
 func isLinkHeartbeatMessage(m *raftpb.Message) bool {
-	return m.Type == raftpb.MsgHeartbeat && m.From == 0 && m.To == 0
+	return m.Type == raftpb.MsgHeartbeat && m.From == "" && m.To == ""
 }
 
 type outgoingConn struct {
@@ -339,7 +339,7 @@ func (cw *streamWriter) closeUnlocked() bool {
 		}
 	}
 	if len(cw.msgc) > 0 {
-		cw.r.ReportUnreachable(uint64(cw.peerID))
+		cw.r.ReportUnreachable(string(cw.peerID))
 	}
 	cw.msgc = make(chan raftpb.Message, streamBufSize)
 	cw.working = false

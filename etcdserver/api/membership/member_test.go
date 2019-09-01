@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"go.etcd.io/etcd/pkg/types"
+	"lucastetreault/did-tangaroa/pkg/types"
 )
 
 func timeParse(value string) *time.Time {

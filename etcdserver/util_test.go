@@ -21,11 +21,11 @@ import (
 
 	"go.uber.org/zap"
 
-	"go.etcd.io/etcd/etcdserver/api/membership"
-	"go.etcd.io/etcd/etcdserver/api/rafthttp"
-	"go.etcd.io/etcd/etcdserver/api/snap"
-	"go.etcd.io/etcd/pkg/types"
-	"go.etcd.io/etcd/raft/raftpb"
+	"lucastetreault/did-tangaroa/etcdserver/api/membership"
+	"lucastetreault/did-tangaroa/etcdserver/api/rafthttp"
+	"lucastetreault/did-tangaroa/etcdserver/api/snap"
+	"lucastetreault/did-tangaroa/pkg/types"
+	"lucastetreault/did-tangaroa/raft/raftpb"
 )
 
 func TestLongestConnected(t *testing.T) {

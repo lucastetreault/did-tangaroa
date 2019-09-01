@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"time"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/etcdserver/api/v3rpc/rpctypes"
-	"go.etcd.io/etcd/functional/rpcpb"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/etcdserver/api/v3rpc/rpctypes"
+	"lucastetreault/did-tangaroa/functional/rpcpb"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

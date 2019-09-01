@@ -15,9 +15,9 @@
 package auth
 
 import (
-	"go.etcd.io/etcd/auth/authpb"
-	"go.etcd.io/etcd/mvcc/backend"
-	"go.etcd.io/etcd/pkg/adt"
+	"lucastetreault/did-tangaroa/auth/authpb"
+	"lucastetreault/did-tangaroa/mvcc/backend"
+	"lucastetreault/did-tangaroa/pkg/adt"
 
 	"go.uber.org/zap"
 )

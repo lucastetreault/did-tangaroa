@@ -22,11 +22,11 @@ import (
 	"testing"
 	"time"
 
-	"go.etcd.io/etcd/etcdserver/api/v3rpc/rpctypes"
-	pb "go.etcd.io/etcd/etcdserver/etcdserverpb"
-	"go.etcd.io/etcd/mvcc"
-	"go.etcd.io/etcd/mvcc/backend"
-	"go.etcd.io/etcd/pkg/testutil"
+	"lucastetreault/did-tangaroa/etcdserver/api/v3rpc/rpctypes"
+	pb "lucastetreault/did-tangaroa/etcdserver/etcdserverpb"
+	"lucastetreault/did-tangaroa/mvcc"
+	"lucastetreault/did-tangaroa/mvcc/backend"
+	"lucastetreault/did-tangaroa/pkg/testutil"
 
 	"go.uber.org/zap"
 )

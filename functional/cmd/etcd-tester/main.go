@@ -18,7 +18,7 @@ package main
 import (
 	"flag"
 
-	"go.etcd.io/etcd/functional/tester"
+	"lucastetreault/did-tangaroa/functional/tester"
 
 	"go.uber.org/zap"
 )

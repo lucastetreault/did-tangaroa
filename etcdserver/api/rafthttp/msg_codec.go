@@ -19,8 +19,8 @@ import (
 	"errors"
 	"io"
 
-	"go.etcd.io/etcd/pkg/pbutil"
-	"go.etcd.io/etcd/raft/raftpb"
+	"lucastetreault/did-tangaroa/pkg/pbutil"
+	"lucastetreault/did-tangaroa/raft/raftpb"
 )
 
 // messageEncoder is a encoder that can encode all kinds of messages.

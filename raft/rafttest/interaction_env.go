@@ -19,8 +19,8 @@ import (
 	"math"
 	"strings"
 
-	"go.etcd.io/etcd/raft"
-	pb "go.etcd.io/etcd/raft/raftpb"
+	"lucastetreault/did-tangaroa/raft"
+	pb "lucastetreault/did-tangaroa/raft/raftpb"
 )
 
 // InteractionOpts groups the options for an InteractionEnv.

@@ -22,7 +22,7 @@ import (
 	"reflect"
 	"testing"
 
-	"go.etcd.io/etcd/wal/walpb"
+	"lucastetreault/did-tangaroa/wal/walpb"
 )
 
 var (

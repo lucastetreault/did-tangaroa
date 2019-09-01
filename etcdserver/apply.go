@@ -21,12 +21,12 @@ import (
 	"sort"
 	"time"
 
-	"go.etcd.io/etcd/auth"
-	pb "go.etcd.io/etcd/etcdserver/etcdserverpb"
-	"go.etcd.io/etcd/lease"
-	"go.etcd.io/etcd/mvcc"
-	"go.etcd.io/etcd/mvcc/mvccpb"
-	"go.etcd.io/etcd/pkg/types"
+	"lucastetreault/did-tangaroa/auth"
+	pb "lucastetreault/did-tangaroa/etcdserver/etcdserverpb"
+	"lucastetreault/did-tangaroa/lease"
+	"lucastetreault/did-tangaroa/mvcc"
+	"lucastetreault/did-tangaroa/mvcc/mvccpb"
+	"lucastetreault/did-tangaroa/pkg/types"
 
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"

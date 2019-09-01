@@ -19,8 +19,8 @@
 //	import (
 //		"context"
 //
-//		"go.etcd.io/etcd/embed"
-//		"go.etcd.io/etcd/etcdserver/api/v3client"
+//		"lucastetreault/did-tangaroa/embed"
+//		"lucastetreault/did-tangaroa/etcdserver/api/v3client"
 //	)
 //
 //	...

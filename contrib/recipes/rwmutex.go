@@ -17,9 +17,9 @@ package recipe
 import (
 	"context"
 
-	v3 "go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/clientv3/concurrency"
-	"go.etcd.io/etcd/mvcc/mvccpb"
+	v3 "lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/clientv3/concurrency"
+	"lucastetreault/did-tangaroa/mvcc/mvccpb"
 )
 
 type RWMutex struct {

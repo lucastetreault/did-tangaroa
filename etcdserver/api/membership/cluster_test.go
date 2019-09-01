@@ -21,11 +21,11 @@ import (
 	"reflect"
 	"testing"
 
-	"go.etcd.io/etcd/etcdserver/api/v2store"
-	"go.etcd.io/etcd/pkg/mock/mockstore"
-	"go.etcd.io/etcd/pkg/testutil"
-	"go.etcd.io/etcd/pkg/types"
-	"go.etcd.io/etcd/raft/raftpb"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2store"
+	"lucastetreault/did-tangaroa/pkg/mock/mockstore"
+	"lucastetreault/did-tangaroa/pkg/testutil"
+	"lucastetreault/did-tangaroa/pkg/types"
+	"lucastetreault/did-tangaroa/raft/raftpb"
 
 	"go.uber.org/zap"
 )

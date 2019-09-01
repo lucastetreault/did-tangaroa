@@ -18,10 +18,10 @@ import (
 	"context"
 	"sync"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/etcdserver/api/v3rpc"
-	"go.etcd.io/etcd/etcdserver/api/v3rpc/rpctypes"
-	pb "go.etcd.io/etcd/etcdserver/etcdserverpb"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/etcdserver/api/v3rpc"
+	"lucastetreault/did-tangaroa/etcdserver/api/v3rpc/rpctypes"
+	pb "lucastetreault/did-tangaroa/etcdserver/etcdserverpb"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"

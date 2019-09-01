@@ -21,7 +21,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"go.etcd.io/etcd/etcdserver/api/v2error"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2error"
 )
 
 // A watcherHub contains all subscribed watchers

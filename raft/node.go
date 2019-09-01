@@ -18,7 +18,7 @@ import (
 	"context"
 	"errors"
 
-	pb "go.etcd.io/etcd/raft/raftpb"
+	pb "lucastetreault/did-tangaroa/raft/raftpb"
 )
 
 type SnapshotStatus int
@@ -38,7 +38,7 @@ var (
 // SoftState provides state that is useful for logging and debugging.
 // The state is volatile and does not need to be persisted to the WAL.
 type SoftState struct {
-	Lead      uint64 // must use atomic operations to access; keep 64-bit aligned.
+	Lead      string // must use atomic operations to access; keep 64-bit aligned.
 	RaftState StateType
 }
 
@@ -175,7 +175,7 @@ type Node interface {
 	ApplyConfChange(cc pb.ConfChangeI) *pb.ConfState
 
 	// TransferLeadership attempts to transfer leadership to the given transferee.
-	TransferLeadership(ctx context.Context, lead, transferee uint64)
+	TransferLeadership(ctx context.Context, lead, transferee string)
 
 	// ReadIndex request a read state. The read state will be set in the ready.
 	// Read state has a read index. Once the application advances further than the read
@@ -186,7 +186,7 @@ type Node interface {
 	// Status returns the current status of the raft state machine.
 	Status() Status
 	// ReportUnreachable reports the given node is not reachable for the last send.
-	ReportUnreachable(id uint64)
+	ReportUnreachable(id string)
 	// ReportSnapshot reports the status of the sent snapshot. The id is the raft ID of the follower
 	// who is meant to receive the snapshot, and the status is SnapshotFinish or SnapshotFailure.
 	// Calling ReportSnapshot with SnapshotFinish is a no-op. But, any failure in applying a
@@ -197,13 +197,13 @@ type Node interface {
 	// updates from the leader. Therefore, it is crucial that the application ensures that any
 	// failure in snapshot sending is caught and reported back to the leader; so it can resume raft
 	// log probing in the follower.
-	ReportSnapshot(id uint64, status SnapshotStatus)
+	ReportSnapshot(id string, status SnapshotStatus)
 	// Stop performs any necessary termination of the Node.
 	Stop()
 }
 
 type Peer struct {
-	ID      uint64
+	ID      string
 	Context []byte
 }
 
@@ -365,7 +365,7 @@ func (n *node) run() {
 			// very sound and likely has bugs.
 			if _, okAfter := r.prs.Progress[r.id]; okBefore && !okAfter {
 				var found bool
-				for _, sl := range [][]uint64{cs.Voters, cs.VotersOutgoing} {
+				for _, sl := range [][]string{cs.Voters, cs.VotersOutgoing} {
 					for _, id := range sl {
 						if id == r.id {
 							found = true
@@ -521,14 +521,14 @@ func (n *node) Status() Status {
 	}
 }
 
-func (n *node) ReportUnreachable(id uint64) {
+func (n *node) ReportUnreachable(id string) {
 	select {
 	case n.recvc <- pb.Message{Type: pb.MsgUnreachable, From: id}:
 	case <-n.done:
 	}
 }
 
-func (n *node) ReportSnapshot(id uint64, status SnapshotStatus) {
+func (n *node) ReportSnapshot(id string, status SnapshotStatus) {
 	rej := status == SnapshotFailure
 
 	select {
@@ -537,7 +537,7 @@ func (n *node) ReportSnapshot(id uint64, status SnapshotStatus) {
 	}
 }
 
-func (n *node) TransferLeadership(ctx context.Context, lead, transferee uint64) {
+func (n *node) TransferLeadership(ctx context.Context, lead, transferee string) {
 	select {
 	// manually set 'from' and 'to', so that leader can voluntarily transfers its leadership
 	case n.recvc <- pb.Message{Type: pb.MsgTransferLeader, From: transferee, To: lead}:

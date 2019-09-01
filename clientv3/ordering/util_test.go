@@ -19,9 +19,9 @@ import (
 	"testing"
 	"time"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/integration"
-	"go.etcd.io/etcd/pkg/testutil"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/integration"
+	"lucastetreault/did-tangaroa/pkg/testutil"
 )
 
 func TestEndpointSwitchResolvesViolation(t *testing.T) {

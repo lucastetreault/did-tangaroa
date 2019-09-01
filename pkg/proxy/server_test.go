@@ -29,7 +29,7 @@ import (
 	"testing"
 	"time"
 
-	"go.etcd.io/etcd/pkg/transport"
+	"lucastetreault/did-tangaroa/pkg/transport"
 
 	"go.uber.org/zap"
 )

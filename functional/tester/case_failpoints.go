@@ -21,7 +21,7 @@ import (
 	"strings"
 	"sync"
 
-	"go.etcd.io/etcd/functional/rpcpb"
+	"lucastetreault/did-tangaroa/functional/rpcpb"
 )
 
 type failpointStats struct {

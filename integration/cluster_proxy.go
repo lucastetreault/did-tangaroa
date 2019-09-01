@@ -19,10 +19,10 @@ package integration
 import (
 	"sync"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/clientv3/namespace"
-	"go.etcd.io/etcd/proxy/grpcproxy"
-	"go.etcd.io/etcd/proxy/grpcproxy/adapter"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/clientv3/namespace"
+	"lucastetreault/did-tangaroa/proxy/grpcproxy"
+	"lucastetreault/did-tangaroa/proxy/grpcproxy/adapter"
 )
 
 var (

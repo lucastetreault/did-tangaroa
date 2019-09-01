@@ -24,7 +24,7 @@ import (
 	"sort"
 	"syscall"
 
-	"go.etcd.io/etcd/pkg/cpuutil"
+	"lucastetreault/did-tangaroa/pkg/cpuutil"
 )
 
 var errNoDefaultRoute = fmt.Errorf("could not find default route")

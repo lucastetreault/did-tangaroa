@@ -21,7 +21,7 @@ import (
 	"strings"
 	"testing"
 
-	"go.etcd.io/etcd/pkg/expect"
+	"lucastetreault/did-tangaroa/pkg/expect"
 )
 
 const exampleConfigFile = "../../etcd.conf.yml.sample"

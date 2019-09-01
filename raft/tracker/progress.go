@@ -240,11 +240,11 @@ func (pr *Progress) String() string {
 }
 
 // ProgressMap is a map of *Progress.
-type ProgressMap map[uint64]*Progress
+type ProgressMap map[string]*Progress
 
 // String prints the ProgressMap in sorted key order, one Progress per line.
 func (m ProgressMap) String() string {
-	ids := make([]uint64, 0, len(m))
+	ids := make([]string, 0, len(m))
 	for k := range m {
 		ids = append(ids, k)
 	}

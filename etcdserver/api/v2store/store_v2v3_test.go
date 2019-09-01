@@ -20,10 +20,10 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/etcdserver/api/v2store"
-	"go.etcd.io/etcd/etcdserver/api/v2v3"
-	"go.etcd.io/etcd/integration"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2store"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2v3"
+	"lucastetreault/did-tangaroa/integration"
 
 	"google.golang.org/grpc/grpclog"
 )

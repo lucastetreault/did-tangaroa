@@ -23,11 +23,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/etcdserver"
-	"go.etcd.io/etcd/etcdserver/api/v3rpc/rpctypes"
-	"go.etcd.io/etcd/functional/rpcpb"
-	"go.etcd.io/etcd/raft"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/etcdserver"
+	"lucastetreault/did-tangaroa/etcdserver/api/v3rpc/rpctypes"
+	"lucastetreault/did-tangaroa/functional/rpcpb"
+	"lucastetreault/did-tangaroa/raft"
 
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"

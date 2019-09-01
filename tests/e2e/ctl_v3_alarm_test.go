@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"go.etcd.io/etcd/clientv3"
+	"lucastetreault/did-tangaroa/clientv3"
 )
 
 func TestCtlV3Alarm(t *testing.T) {

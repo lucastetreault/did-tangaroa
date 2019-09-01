@@ -21,9 +21,9 @@ import (
 	"strconv"
 	"testing"
 
-	v3 "go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/clientv3/concurrency"
-	"go.etcd.io/etcd/pkg/testutil"
+	v3 "lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/clientv3/concurrency"
+	"lucastetreault/did-tangaroa/pkg/testutil"
 )
 
 // TestSTMConflict tests that conflicts are retried.

@@ -21,19 +21,19 @@ import (
 	"net/http"
 	"strings"
 
-	"go.etcd.io/etcd/etcdserver"
-	"go.etcd.io/etcd/etcdserver/api"
-	"go.etcd.io/etcd/etcdserver/api/v2error"
-	"go.etcd.io/etcd/etcdserver/api/v2http/httptypes"
-	"go.etcd.io/etcd/pkg/logutil"
-	"go.etcd.io/etcd/version"
+	"lucastetreault/did-tangaroa/etcdserver"
+	"lucastetreault/did-tangaroa/etcdserver/api"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2error"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2http/httptypes"
+	"lucastetreault/did-tangaroa/pkg/logutil"
+	"lucastetreault/did-tangaroa/version"
 
 	"github.com/coreos/pkg/capnslog"
 	"go.uber.org/zap"
 )
 
 var (
-	plog = capnslog.NewPackageLogger("go.etcd.io/etcd", "etcdserver/api/etcdhttp")
+	plog = capnslog.NewPackageLogger("lucastetreault/did-tangaroa", "etcdserver/api/etcdhttp")
 	mlog = logutil.NewMergeLogger(plog)
 )
 

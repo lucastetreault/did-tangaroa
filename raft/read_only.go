@@ -14,7 +14,7 @@
 
 package raft
 
-import pb "go.etcd.io/etcd/raft/raftpb"
+import pb "lucastetreault/did-tangaroa/raft/raftpb"
 
 // ReadState provides state for read only query.
 // It's caller's responsibility to call ReadIndex first before getting
@@ -33,7 +33,7 @@ type readIndexStatus struct {
 	// instead of a map[uint64]struct{} due to the API of quorum.VoteResult. If
 	// this becomes performance sensitive enough (doubtful), quorum.VoteResult
 	// can change to an API that is closer to that of CommittedIndex.
-	acks map[uint64]bool
+	acks map[string]bool
 }
 
 type readOnly struct {
@@ -58,14 +58,14 @@ func (ro *readOnly) addRequest(index uint64, m pb.Message) {
 	if _, ok := ro.pendingReadIndex[s]; ok {
 		return
 	}
-	ro.pendingReadIndex[s] = &readIndexStatus{index: index, req: m, acks: make(map[uint64]bool)}
+	ro.pendingReadIndex[s] = &readIndexStatus{index: index, req: m, acks: make(map[string]bool)}
 	ro.readIndexQueue = append(ro.readIndexQueue, s)
 }
 
 // recvAck notifies the readonly struct that the raft state machine received
 // an acknowledgment of the heartbeat that attached with the read only request
 // context.
-func (ro *readOnly) recvAck(id uint64, context []byte) map[uint64]bool {
+func (ro *readOnly) recvAck(id string, context []byte) map[string]bool {
 	rs, ok := ro.pendingReadIndex[string(context)]
 	if !ok {
 		return nil

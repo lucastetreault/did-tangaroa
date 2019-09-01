@@ -29,7 +29,7 @@ import (
 	"sync"
 	"time"
 
-	"go.etcd.io/etcd/version"
+	"lucastetreault/did-tangaroa/version"
 )
 
 var (

@@ -23,8 +23,8 @@ import (
 	"sync"
 	"time"
 
-	"go.etcd.io/etcd/etcdserver/api/v2error"
-	"go.etcd.io/etcd/pkg/types"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2error"
+	"lucastetreault/did-tangaroa/pkg/types"
 
 	"github.com/jonboulle/clockwork"
 )

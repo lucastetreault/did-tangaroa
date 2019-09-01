@@ -17,10 +17,10 @@ package etcdserver
 import (
 	"sync"
 
-	"go.etcd.io/etcd/auth"
-	pb "go.etcd.io/etcd/etcdserver/etcdserverpb"
-	"go.etcd.io/etcd/lease"
-	"go.etcd.io/etcd/mvcc"
+	"lucastetreault/did-tangaroa/auth"
+	pb "lucastetreault/did-tangaroa/etcdserver/etcdserverpb"
+	"lucastetreault/did-tangaroa/lease"
+	"lucastetreault/did-tangaroa/mvcc"
 )
 
 type authApplierV3 struct {

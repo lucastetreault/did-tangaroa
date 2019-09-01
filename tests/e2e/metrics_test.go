@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"testing"
 
-	"go.etcd.io/etcd/version"
+	"lucastetreault/did-tangaroa/version"
 )
 
 func TestV3MetricsSecure(t *testing.T) {

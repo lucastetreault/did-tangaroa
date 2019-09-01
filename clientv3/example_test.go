@@ -20,8 +20,8 @@ import (
 	"os"
 	"time"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/pkg/transport"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/pkg/transport"
 
 	"google.golang.org/grpc/grpclog"
 )

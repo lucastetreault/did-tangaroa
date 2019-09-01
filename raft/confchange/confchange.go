@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"strings"
 
-	"go.etcd.io/etcd/raft/quorum"
-	pb "go.etcd.io/etcd/raft/raftpb"
-	"go.etcd.io/etcd/raft/tracker"
+	"lucastetreault/did-tangaroa/raft/quorum"
+	pb "lucastetreault/did-tangaroa/raft/raftpb"
+	"lucastetreault/did-tangaroa/raft/tracker"
 )
 
 // Changer facilitates configuration changes. It exposes methods to handle
@@ -154,7 +154,7 @@ func (c Changer) Simple(ccs ...pb.ConfChangeSingle) (tracker.Config, tracker.Pro
 // empty or preserves the outgoing majority configuration while in a joint state.
 func (c Changer) apply(cfg *tracker.Config, prs tracker.ProgressMap, ccs ...pb.ConfChangeSingle) error {
 	for _, cc := range ccs {
-		if cc.NodeID == 0 {
+		if cc.NodeID == "" {
 			// etcd replaces the NodeID with zero if it decides (downstream of
 			// raft) to not apply a change, so we have to have explicit code
 			// here to ignore these.
@@ -180,7 +180,7 @@ func (c Changer) apply(cfg *tracker.Config, prs tracker.ProgressMap, ccs ...pb.C
 
 // makeVoter adds or promotes the given ID to be a voter in the incoming
 // majority config.
-func (c Changer) makeVoter(cfg *tracker.Config, prs tracker.ProgressMap, id uint64) {
+func (c Changer) makeVoter(cfg *tracker.Config, prs tracker.ProgressMap, id string) {
 	pr := prs[id]
 	if pr == nil {
 		c.initProgress(cfg, prs, id, false /* isLearner */)
@@ -207,7 +207,7 @@ func (c Changer) makeVoter(cfg *tracker.Config, prs tracker.ProgressMap, id uint
 // simultaneously. Instead, we add the learner to LearnersNext, so that it will
 // be added to Learners the moment the outgoing config is removed by
 // LeaveJoint().
-func (c Changer) makeLearner(cfg *tracker.Config, prs tracker.ProgressMap, id uint64) {
+func (c Changer) makeLearner(cfg *tracker.Config, prs tracker.ProgressMap, id string) {
 	pr := prs[id]
 	if pr == nil {
 		c.initProgress(cfg, prs, id, true /* isLearner */)
@@ -234,7 +234,7 @@ func (c Changer) makeLearner(cfg *tracker.Config, prs tracker.ProgressMap, id ui
 }
 
 // remove this peer as a voter or learner from the incoming config.
-func (c Changer) remove(cfg *tracker.Config, prs tracker.ProgressMap, id uint64) {
+func (c Changer) remove(cfg *tracker.Config, prs tracker.ProgressMap, id string) {
 	if _, ok := prs[id]; !ok {
 		return
 	}
@@ -250,7 +250,7 @@ func (c Changer) remove(cfg *tracker.Config, prs tracker.ProgressMap, id uint64)
 }
 
 // initProgress initializes a new progress for the given node or learner.
-func (c Changer) initProgress(cfg *tracker.Config, prs tracker.ProgressMap, id uint64, isLearner bool) {
+func (c Changer) initProgress(cfg *tracker.Config, prs tracker.ProgressMap, id string, isLearner bool) {
 	if !isLearner {
 		incoming(cfg.Voters)[id] = struct{}{}
 	} else {
@@ -286,7 +286,7 @@ func checkInvariants(cfg tracker.Config, prs tracker.ProgressMap) error {
 	// during tests). Instead of having to hand-code this, we allow
 	// transitioning from an empty config into any other legal and non-empty
 	// config.
-	for _, ids := range []map[uint64]struct{}{
+	for _, ids := range []map[string]struct{}{
 		cfg.Voters.IDs(),
 		cfg.Learners,
 		cfg.LearnersNext,
@@ -367,15 +367,15 @@ func (c Changer) err(err error) (tracker.Config, tracker.ProgressMap, error) {
 }
 
 // nilAwareAdd populates a map entry, creating the map if necessary.
-func nilAwareAdd(m *map[uint64]struct{}, id uint64) {
+func nilAwareAdd(m *map[string]struct{}, id string) {
 	if *m == nil {
-		*m = map[uint64]struct{}{}
+		*m = map[string]struct{}{}
 	}
 	(*m)[id] = struct{}{}
 }
 
 // nilAwareDelete deletes from a map, nil'ing the map itself if it is empty after.
-func nilAwareDelete(m *map[uint64]struct{}, id uint64) {
+func nilAwareDelete(m *map[string]struct{}, id string) {
 	if *m == nil {
 		return
 	}
@@ -387,7 +387,7 @@ func nilAwareDelete(m *map[uint64]struct{}, id uint64) {
 
 // symdiff returns the count of the symmetric difference between the sets of
 // uint64s, i.e. len( (l - r) \union (r - l)).
-func symdiff(l, r map[uint64]struct{}) int {
+func symdiff(l, r map[string]struct{}) int {
 	var n int
 	pairs := [][2]quorum.MajorityConfig{
 		{l, r}, // count elems in l but not in r

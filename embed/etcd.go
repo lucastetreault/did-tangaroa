@@ -29,18 +29,18 @@ import (
 	"sync"
 	"time"
 
-	"go.etcd.io/etcd/etcdserver"
-	"go.etcd.io/etcd/etcdserver/api/etcdhttp"
-	"go.etcd.io/etcd/etcdserver/api/rafthttp"
-	"go.etcd.io/etcd/etcdserver/api/v2http"
-	"go.etcd.io/etcd/etcdserver/api/v2v3"
-	"go.etcd.io/etcd/etcdserver/api/v3client"
-	"go.etcd.io/etcd/etcdserver/api/v3rpc"
-	"go.etcd.io/etcd/pkg/debugutil"
-	runtimeutil "go.etcd.io/etcd/pkg/runtime"
-	"go.etcd.io/etcd/pkg/transport"
-	"go.etcd.io/etcd/pkg/types"
-	"go.etcd.io/etcd/version"
+	"lucastetreault/did-tangaroa/etcdserver"
+	"lucastetreault/did-tangaroa/etcdserver/api/etcdhttp"
+	"lucastetreault/did-tangaroa/etcdserver/api/rafthttp"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2http"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2v3"
+	"lucastetreault/did-tangaroa/etcdserver/api/v3client"
+	"lucastetreault/did-tangaroa/etcdserver/api/v3rpc"
+	"lucastetreault/did-tangaroa/pkg/debugutil"
+	runtimeutil "lucastetreault/did-tangaroa/pkg/runtime"
+	"lucastetreault/did-tangaroa/pkg/transport"
+	"lucastetreault/did-tangaroa/pkg/types"
+	"lucastetreault/did-tangaroa/version"
 
 	"github.com/coreos/pkg/capnslog"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
@@ -50,7 +50,7 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
-var plog = capnslog.NewPackageLogger("go.etcd.io/etcd", "embed")
+var plog = capnslog.NewPackageLogger("lucastetreault/did-tangaroa", "embed")
 
 const (
 	// internal fd usage includes disk usage and transport usage.

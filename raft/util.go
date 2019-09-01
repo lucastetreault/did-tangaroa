@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"strings"
 
-	pb "go.etcd.io/etcd/raft/raftpb"
+	pb "lucastetreault/did-tangaroa/raft/raftpb"
 )
 
 func (st StateType) MarshalJSON() ([]byte, error) {
@@ -64,7 +64,7 @@ func voteRespMsgType(msgt pb.MessageType) pb.MessageType {
 func DescribeHardState(hs pb.HardState) string {
 	var buf strings.Builder
 	fmt.Fprintf(&buf, "Term:%d", hs.Term)
-	if hs.Vote != 0 {
+	if hs.Vote != "" {
 		fmt.Fprintf(&buf, " Vote:%d", hs.Vote)
 	}
 	fmt.Fprintf(&buf, " Commit:%d", hs.Commit)

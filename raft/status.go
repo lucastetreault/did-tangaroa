@@ -17,8 +17,8 @@ package raft
 import (
 	"fmt"
 
-	pb "go.etcd.io/etcd/raft/raftpb"
-	"go.etcd.io/etcd/raft/tracker"
+	pb "lucastetreault/did-tangaroa/raft/raftpb"
+	"lucastetreault/did-tangaroa/raft/tracker"
 )
 
 // Status contains information about this Raft peer and its view of the system.
@@ -26,24 +26,24 @@ import (
 type Status struct {
 	BasicStatus
 	Config   tracker.Config
-	Progress map[uint64]tracker.Progress
+	Progress map[string]tracker.Progress
 }
 
 // BasicStatus contains basic information about the Raft peer. It does not allocate.
 type BasicStatus struct {
-	ID uint64
+	ID string
 
 	pb.HardState
 	SoftState
 
 	Applied uint64
 
-	LeadTransferee uint64
+	LeadTransferee string
 }
 
-func getProgressCopy(r *raft) map[uint64]tracker.Progress {
-	m := make(map[uint64]tracker.Progress)
-	r.prs.Visit(func(id uint64, pr *tracker.Progress) {
+func getProgressCopy(r *raft) map[string]tracker.Progress {
+	m := make(map[string]tracker.Progress)
+	r.prs.Visit(func(id string, pr *tracker.Progress) {
 		var p tracker.Progress
 		p = *pr
 		p.Inflights = pr.Inflights.Clone()

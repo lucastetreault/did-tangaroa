@@ -21,7 +21,7 @@ Launch an embedded etcd server using the configuration defaults:
 		"log"
 		"time"
 
-		"go.etcd.io/etcd/embed"
+		"lucastetreault/did-tangaroa/embed"
 	)
 
 	func main() {

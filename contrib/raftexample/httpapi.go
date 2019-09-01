@@ -20,7 +20,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"go.etcd.io/etcd/raft/raftpb"
+	"lucastetreault/did-tangaroa/raft/raftpb"
 )
 
 // Handler for a http based key-value store backed by raft
@@ -60,16 +60,9 @@ func (h *httpKVAPI) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		nodeId, err := strconv.ParseUint(key[1:], 0, 64)
-		if err != nil {
-			log.Printf("Failed to convert ID for conf change (%v)\n", err)
-			http.Error(w, "Failed on POST", http.StatusBadRequest)
-			return
-		}
-
 		cc := raftpb.ConfChange{
 			Type:    raftpb.ConfChangeAddNode,
-			NodeID:  nodeId,
+			NodeID:  key[1:],
 			Context: url,
 		}
 		h.confChangeC <- cc
@@ -77,16 +70,9 @@ func (h *httpKVAPI) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// As above, optimistic that raft will apply the conf change
 		w.WriteHeader(http.StatusNoContent)
 	case r.Method == "DELETE":
-		nodeId, err := strconv.ParseUint(key[1:], 0, 64)
-		if err != nil {
-			log.Printf("Failed to convert ID for conf change (%v)\n", err)
-			http.Error(w, "Failed on DELETE", http.StatusBadRequest)
-			return
-		}
-
 		cc := raftpb.ConfChange{
 			Type:   raftpb.ConfChangeRemoveNode,
-			NodeID: nodeId,
+			NodeID: key[1:],
 		}
 		h.confChangeC <- cc
 

@@ -24,11 +24,11 @@ import (
 	"strings"
 	"time"
 
-	"go.etcd.io/etcd/etcdserver/api/snap"
-	pioutil "go.etcd.io/etcd/pkg/ioutil"
-	"go.etcd.io/etcd/pkg/types"
-	"go.etcd.io/etcd/raft/raftpb"
-	"go.etcd.io/etcd/version"
+	"lucastetreault/did-tangaroa/etcdserver/api/snap"
+	pioutil "lucastetreault/did-tangaroa/pkg/ioutil"
+	"lucastetreault/did-tangaroa/pkg/types"
+	"lucastetreault/did-tangaroa/raft/raftpb"
+	"lucastetreault/did-tangaroa/version"
 
 	humanize "github.com/dustin/go-humanize"
 	"go.uber.org/zap"
@@ -416,7 +416,7 @@ func (h *streamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid from", http.StatusNotFound)
 		return
 	}
-	if h.r.IsIDRemoved(uint64(from)) {
+	if h.r.IsIDRemoved(string(from)) {
 		if h.lg != nil {
 			h.lg.Warn(
 				"rejected stream from remote peer because it was removed",

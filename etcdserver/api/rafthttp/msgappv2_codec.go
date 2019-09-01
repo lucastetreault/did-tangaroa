@@ -20,10 +20,10 @@ import (
 	"io"
 	"time"
 
-	stats "go.etcd.io/etcd/etcdserver/api/v2stats"
-	"go.etcd.io/etcd/pkg/pbutil"
-	"go.etcd.io/etcd/pkg/types"
-	"go.etcd.io/etcd/raft/raftpb"
+	stats "lucastetreault/did-tangaroa/etcdserver/api/v2stats"
+	"lucastetreault/did-tangaroa/pkg/pbutil"
+	"lucastetreault/did-tangaroa/pkg/types"
+	"lucastetreault/did-tangaroa/raft/raftpb"
 )
 
 const (
@@ -186,8 +186,8 @@ func (dec *msgAppV2Decoder) decode() (raftpb.Message, error) {
 	case msgTypeAppEntries:
 		m = raftpb.Message{
 			Type:    raftpb.MsgApp,
-			From:    uint64(dec.remote),
-			To:      uint64(dec.local),
+			From:    string(dec.remote),
+			To:      string(dec.local),
 			Term:    dec.term,
 			LogTerm: dec.term,
 			Index:   dec.index,

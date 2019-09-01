@@ -15,7 +15,7 @@
 package types
 
 import (
-	"go.etcd.io/etcd/pkg/testutil"
+	"lucastetreault/did-tangaroa/pkg/testutil"
 	"reflect"
 	"testing"
 )

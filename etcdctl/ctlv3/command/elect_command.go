@@ -21,8 +21,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/clientv3/concurrency"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/clientv3/concurrency"
 
 	"github.com/spf13/cobra"
 )

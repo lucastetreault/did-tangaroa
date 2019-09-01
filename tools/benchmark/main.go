@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"os"
 
-	"go.etcd.io/etcd/tools/benchmark/cmd"
+	"lucastetreault/did-tangaroa/tools/benchmark/cmd"
 )
 
 func main() {

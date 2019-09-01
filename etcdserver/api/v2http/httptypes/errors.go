@@ -22,7 +22,7 @@ import (
 )
 
 var (
-	plog = capnslog.NewPackageLogger("go.etcd.io/etcd", "etcdserver/api/v2http/httptypes")
+	plog = capnslog.NewPackageLogger("lucastetreault/did-tangaroa", "etcdserver/api/v2http/httptypes")
 )
 
 type HTTPError struct {

@@ -19,7 +19,7 @@ import (
 	"sort"
 	"testing"
 
-	"go.etcd.io/etcd/functional/rpcpb"
+	"lucastetreault/did-tangaroa/functional/rpcpb"
 
 	"go.uber.org/zap"
 )

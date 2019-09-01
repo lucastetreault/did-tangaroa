@@ -25,14 +25,14 @@ import (
 	"sync"
 	"time"
 
-	"go.etcd.io/etcd/raft/confchange"
-	"go.etcd.io/etcd/raft/quorum"
-	pb "go.etcd.io/etcd/raft/raftpb"
-	"go.etcd.io/etcd/raft/tracker"
+	"lucastetreault/did-tangaroa/raft/confchange"
+	"lucastetreault/did-tangaroa/raft/quorum"
+	pb "lucastetreault/did-tangaroa/raft/raftpb"
+	"lucastetreault/did-tangaroa/raft/tracker"
 )
 
 // None is a placeholder node ID used when there is no leader.
-const None uint64 = 0
+const None string = ""
 const noLimit = math.MaxUint64
 
 // Possible values for StateType.
@@ -115,18 +115,18 @@ func (st StateType) String() string {
 // Config contains the parameters to start a raft.
 type Config struct {
 	// ID is the identity of the local raft. ID cannot be 0.
-	ID uint64
+	ID string
 
 	// peers contains the IDs of all nodes (including self) in the raft cluster. It
 	// should only be set when starting a new raft cluster. Restarting raft from
 	// previous configuration will panic if peers is set. peer is private and only
 	// used for testing right now.
-	peers []uint64
+	peers []string
 
 	// learners contains the IDs of all learner nodes (including self if the
 	// local node is a learner) in the raft cluster. learners only receives
 	// entries from the leader node. It does not vote or promote itself.
-	learners []uint64
+	learners []string
 
 	// ElectionTick is the number of Node.Tick invocations that must pass between
 	// elections. That is, if a follower does not receive any message from the
@@ -252,10 +252,10 @@ func (c *Config) validate() error {
 }
 
 type raft struct {
-	id uint64
+	id string
 
 	Term uint64
-	Vote uint64
+	Vote string
 
 	readStates []ReadState
 
@@ -275,10 +275,10 @@ type raft struct {
 	msgs []pb.Message
 
 	// the leader id
-	lead uint64
+	lead string
 	// leadTransferee is id of the leader transfer target when its value is not zero.
 	// Follow the procedure defined in raft thesis 3.10.
-	leadTransferee uint64
+	leadTransferee string
 	// Only one conf change may be pending (in the log, but not yet
 	// applied) at a time. This is enforced via pendingConfIndex, which
 	// is set to a value >= the log index of the latest pending
@@ -428,12 +428,14 @@ func (r *raft) send(m pb.Message) {
 			m.Term = r.Term
 		}
 	}
+
+	//TODO(lt) sign messages!
 	r.msgs = append(r.msgs, m)
 }
 
 // sendAppend sends an append RPC with new entries (if any) and the
 // current commit index to the given peer.
-func (r *raft) sendAppend(to uint64) {
+func (r *raft) sendAppend(to string) {
 	r.maybeSendAppend(to, true)
 }
 
@@ -442,7 +444,7 @@ func (r *raft) sendAppend(to uint64) {
 // argument controls whether messages with no entries will be sent
 // ("empty" messages are useful to convey updated Commit indexes, but
 // are undesirable when we're sending multiple messages in a batch).
-func (r *raft) maybeSendAppend(to uint64, sendIfEmpty bool) bool {
+func (r *raft) maybeSendAppend(to string, sendIfEmpty bool) bool {
 	pr := r.prs.Progress[to]
 	if pr.IsPaused() {
 		return false
@@ -505,7 +507,7 @@ func (r *raft) maybeSendAppend(to uint64, sendIfEmpty bool) bool {
 }
 
 // sendHeartbeat sends a heartbeat RPC to the given peer.
-func (r *raft) sendHeartbeat(to uint64, ctx []byte) {
+func (r *raft) sendHeartbeat(to string, ctx []byte) {
 	// Attach the commit as min(to.matched, r.committed).
 	// When the leader sends out heartbeat message,
 	// the receiver(follower) might not be matched with the leader
@@ -526,7 +528,7 @@ func (r *raft) sendHeartbeat(to uint64, ctx []byte) {
 // bcastAppend sends RPC, with entries to all peers that are not up-to-date
 // according to the progress recorded in r.prs.
 func (r *raft) bcastAppend() {
-	r.prs.Visit(func(id uint64, _ *tracker.Progress) {
+	r.prs.Visit(func(id string, _ *tracker.Progress) {
 		if id == r.id {
 			return
 		}
@@ -545,7 +547,7 @@ func (r *raft) bcastHeartbeat() {
 }
 
 func (r *raft) bcastHeartbeatWithCtx(ctx []byte) {
-	r.prs.Visit(func(id uint64, _ *tracker.Progress) {
+	r.prs.Visit(func(id string, _ *tracker.Progress) {
 		if id == r.id {
 			return
 		}
@@ -615,7 +617,7 @@ func (r *raft) reset(term uint64) {
 	r.abortLeaderTransfer()
 
 	r.prs.ResetVotes()
-	r.prs.Visit(func(id uint64, pr *tracker.Progress) {
+	r.prs.Visit(func(id string, pr *tracker.Progress) {
 		*pr = tracker.Progress{
 			Match:     0,
 			Next:      r.raftLog.lastIndex() + 1,
@@ -691,7 +693,7 @@ func (r *raft) tickHeartbeat() {
 	}
 }
 
-func (r *raft) becomeFollower(term uint64, lead uint64) {
+func (r *raft) becomeFollower(term uint64, lead string) {
 	r.step = stepFollower
 	r.reset(term)
 	r.tick = r.tickElection
@@ -795,10 +797,10 @@ func (r *raft) campaign(t CampaignType) {
 		}
 		return
 	}
-	var ids []uint64
+	var ids []string
 	{
 		idMap := r.prs.Voters.IDs()
-		ids = make([]uint64, 0, len(idMap))
+		ids = make([]string, 0, len(idMap))
 		for id := range idMap {
 			ids = append(ids, id)
 		}
@@ -819,7 +821,7 @@ func (r *raft) campaign(t CampaignType) {
 	}
 }
 
-func (r *raft) poll(id uint64, t pb.MessageType, v bool) (granted int, rejected int, result quorum.VoteResult) {
+func (r *raft) poll(id string, t pb.MessageType, v bool) (granted int, rejected int, result quorum.VoteResult) {
 	if v {
 		r.logger.Infof("%x received %s from %x at term %d", r.id, t, id, r.Term)
 	} else {
@@ -933,9 +935,9 @@ func (r *raft) Step(m pb.Message) error {
 	case pb.MsgVote, pb.MsgPreVote:
 		// We can vote if this is a repeat of a vote we've already cast...
 		canVote := r.Vote == m.From ||
-			// ...we haven't voted and we don't think there's a leader yet in this term...
+		// ...we haven't voted and we don't think there's a leader yet in this term...
 			(r.Vote == None && r.lead == None) ||
-			// ...or this is a PreVote for a future term...
+		// ...or this is a PreVote for a future term...
 			(m.Type == pb.MsgPreVote && m.Term > r.Term)
 		// ...and we believe the candidate is up to date.
 		if canVote && r.raftLog.isUpToDate(m.Index, m.LogTerm) {
@@ -1013,13 +1015,16 @@ func stepLeader(r *raft, m pb.Message) error {
 		}
 		// Mark everyone (but ourselves) as inactive in preparation for the next
 		// CheckQuorum.
-		r.prs.Visit(func(id uint64, pr *tracker.Progress) {
+		r.prs.Visit(func(id string, pr *tracker.Progress) {
 			if id != r.id {
 				pr.RecentActive = false
 			}
 		})
 		return nil
 	case pb.MsgProp:
+
+		//TODO(lt): Authenticate/Authorize the request (e.g.: if they are updating a did document, do they control it?)
+
 		if len(m.Entries) == 0 {
 			r.logger.Panicf("%x stepped empty MsgProp", r.id)
 		}
@@ -1123,6 +1128,10 @@ func stepLeader(r *raft, m pb.Message) error {
 	}
 	switch m.Type {
 	case pb.MsgAppResp:
+
+		//TODO: All nodes should receive and process MsgAppResp messages and should determine quorum and commit on their own
+		//TODO: Authenticate the message received
+
 		pr.RecentActive = true
 
 		if m.Reject {
@@ -1435,7 +1444,7 @@ func (r *raft) restore(s pb.Snapshot) bool {
 	// code here and there assumes that r.id is in the progress tracker.
 	found := false
 	cs := s.Metadata.ConfState
-	for _, set := range [][]uint64{
+	for _, set := range [][]string{
 		cs.Voters,
 		cs.Learners,
 	} {
@@ -1562,12 +1571,12 @@ func (r *raft) switchToConfig(cfg tracker.Config, prs tracker.ProgressMap) pb.Co
 		// Otherwise, still probe the newly added replicas; there's no reason to
 		// let them wait out a heartbeat interval (or the next incoming
 		// proposal).
-		r.prs.Visit(func(id uint64, pr *tracker.Progress) {
+		r.prs.Visit(func(id string, pr *tracker.Progress) {
 			r.maybeSendAppend(id, false /* sendIfEmpty */)
 		})
 	}
 	// If the the leadTransferee was removed, abort the leadership transfer.
-	if _, tOK := r.prs.Progress[r.leadTransferee]; !tOK && r.leadTransferee != 0 {
+	if _, tOK := r.prs.Progress[r.leadTransferee]; !tOK && r.leadTransferee != "" {
 		r.abortLeaderTransfer()
 	}
 
@@ -1594,7 +1603,7 @@ func (r *raft) resetRandomizedElectionTimeout() {
 	r.randomizedElectionTimeout = r.electionTimeout + globalRand.Intn(r.electionTimeout)
 }
 
-func (r *raft) sendTimeoutNow(to uint64) {
+func (r *raft) sendTimeoutNow(to string) {
 	r.send(pb.Message{To: to, Type: pb.MsgTimeoutNow})
 }
 

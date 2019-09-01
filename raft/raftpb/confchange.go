@@ -16,7 +16,6 @@ package raftpb
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/gogo/protobuf/proto"
@@ -135,11 +134,7 @@ func ConfChangesFromString(s string) ([]ConfChangeSingle, error) {
 		default:
 			return nil, fmt.Errorf("unknown input: %s", tok)
 		}
-		id, err := strconv.ParseUint(tok[1:], 10, 64)
-		if err != nil {
-			return nil, err
-		}
-		cc.NodeID = id
+		cc.NodeID = tok[1:]
 		ccs = append(ccs, cc)
 	}
 	return ccs, nil

@@ -19,10 +19,10 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"go.etcd.io/etcd/lease/leasepb"
-	"go.etcd.io/etcd/mvcc"
-	"go.etcd.io/etcd/mvcc/backend"
-	"go.etcd.io/etcd/mvcc/mvccpb"
+	"lucastetreault/did-tangaroa/lease/leasepb"
+	"lucastetreault/did-tangaroa/mvcc"
+	"lucastetreault/did-tangaroa/mvcc/backend"
+	"lucastetreault/did-tangaroa/mvcc/mvccpb"
 
 	bolt "go.etcd.io/bbolt"
 )

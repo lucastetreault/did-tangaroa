@@ -21,10 +21,10 @@ import (
 	"os"
 	"sync"
 
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/clientv3/naming"
-	"go.etcd.io/etcd/etcdserver/api/v3rpc/rpctypes"
-	pb "go.etcd.io/etcd/etcdserver/etcdserverpb"
+	"lucastetreault/did-tangaroa/clientv3"
+	"lucastetreault/did-tangaroa/clientv3/naming"
+	"lucastetreault/did-tangaroa/etcdserver/api/v3rpc/rpctypes"
+	pb "lucastetreault/did-tangaroa/etcdserver/etcdserverpb"
 
 	"golang.org/x/time/rate"
 	gnaming "google.golang.org/grpc/naming"

@@ -18,9 +18,9 @@ import (
 	"fmt"
 	"os"
 
-	v3 "go.etcd.io/etcd/clientv3"
-	pb "go.etcd.io/etcd/etcdserver/etcdserverpb"
-	mvccpb "go.etcd.io/etcd/mvcc/mvccpb"
+	v3 "lucastetreault/did-tangaroa/clientv3"
+	pb "lucastetreault/did-tangaroa/etcdserver/etcdserverpb"
+	mvccpb "lucastetreault/did-tangaroa/mvcc/mvccpb"
 )
 
 type pbPrinter struct{ printer }

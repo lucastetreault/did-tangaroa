@@ -5,7 +5,7 @@
 ## Download and install
 To get `benchmark` from the `master` branch via `go get`:
 ```sh
-$ go get go.etcd.io/etcd/tools/benchmark
+$ go get lucastetreault/did-tangaroa/tools/benchmark
 # GOPATH should be set
 $ ls $GOPATH/bin
 benchmark

@@ -18,8 +18,8 @@ import (
 	goruntime "runtime"
 	"time"
 
-	"go.etcd.io/etcd/pkg/runtime"
-	"go.etcd.io/etcd/version"
+	"lucastetreault/did-tangaroa/pkg/runtime"
+	"lucastetreault/did-tangaroa/version"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"

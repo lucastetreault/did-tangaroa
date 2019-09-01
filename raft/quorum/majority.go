@@ -22,10 +22,10 @@ import (
 )
 
 // MajorityConfig is a set of IDs that uses majority quorums to make decisions.
-type MajorityConfig map[uint64]struct{}
+type MajorityConfig map[string]struct{}
 
 func (c MajorityConfig) String() string {
-	sl := make([]uint64, 0, len(c))
+	sl := make([]string, 0, len(c))
 	for id := range c {
 		sl = append(sl, id)
 	}
@@ -49,7 +49,7 @@ func (c MajorityConfig) Describe(l AckedIndexer) string {
 		return "<empty majority quorum>"
 	}
 	type tup struct {
-		id  uint64
+		id  string
 		idx Index
 		ok  bool // idx found?
 		bar int  // length of bar displayed for this tup
@@ -103,8 +103,8 @@ func (c MajorityConfig) Describe(l AckedIndexer) string {
 }
 
 // Slice returns the MajorityConfig as a sorted slice.
-func (c MajorityConfig) Slice() []uint64 {
-	var sl []uint64
+func (c MajorityConfig) Slice() []string {
+	var sl []string
 	for id := range c {
 		sl = append(sl, id)
 	}
@@ -175,7 +175,7 @@ func (c MajorityConfig) CommittedIndex(l AckedIndexer) Index {
 // a result indicating whether the vote is pending (i.e. neither a quorum of
 // yes/no has been reached), won (a quorum of yes has been reached), or lost (a
 // quorum of no has been reached).
-func (c MajorityConfig) VoteResult(votes map[uint64]bool) VoteResult {
+func (c MajorityConfig) VoteResult(votes map[string]bool) VoteResult {
 	if len(c) == 0 {
 		// By convention, the elections on an empty config win. This comes in
 		// handy with joint quorums because it'll make a half-populated joint

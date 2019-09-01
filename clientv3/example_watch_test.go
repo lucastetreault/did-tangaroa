@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"log"
 
-	"go.etcd.io/etcd/clientv3"
+	"lucastetreault/did-tangaroa/clientv3"
 )
 
 func ExampleWatcher_watch() {

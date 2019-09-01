@@ -21,7 +21,7 @@ Create a Config and exchange it for a Client:
 		"net/http"
 		"context"
 
-		"go.etcd.io/etcd/client"
+		"lucastetreault/did-tangaroa/client"
 	)
 
 	cfg := client.Config{

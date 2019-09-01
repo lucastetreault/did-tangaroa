@@ -26,17 +26,17 @@ import (
 	"strings"
 	"time"
 
-	"go.etcd.io/etcd/embed"
-	"go.etcd.io/etcd/etcdserver"
-	"go.etcd.io/etcd/etcdserver/api/etcdhttp"
-	"go.etcd.io/etcd/etcdserver/api/v2discovery"
-	"go.etcd.io/etcd/pkg/fileutil"
-	pkgioutil "go.etcd.io/etcd/pkg/ioutil"
-	"go.etcd.io/etcd/pkg/osutil"
-	"go.etcd.io/etcd/pkg/transport"
-	"go.etcd.io/etcd/pkg/types"
-	"go.etcd.io/etcd/proxy/httpproxy"
-	"go.etcd.io/etcd/version"
+	"lucastetreault/did-tangaroa/embed"
+	"lucastetreault/did-tangaroa/etcdserver"
+	"lucastetreault/did-tangaroa/etcdserver/api/etcdhttp"
+	"lucastetreault/did-tangaroa/etcdserver/api/v2discovery"
+	"lucastetreault/did-tangaroa/pkg/fileutil"
+	pkgioutil "lucastetreault/did-tangaroa/pkg/ioutil"
+	"lucastetreault/did-tangaroa/pkg/osutil"
+	"lucastetreault/did-tangaroa/pkg/transport"
+	"lucastetreault/did-tangaroa/pkg/types"
+	"lucastetreault/did-tangaroa/proxy/httpproxy"
+	"lucastetreault/did-tangaroa/version"
 
 	"github.com/coreos/pkg/capnslog"
 	"go.uber.org/zap"
@@ -45,7 +45,7 @@ import (
 
 type dirType string
 
-var plog = capnslog.NewPackageLogger("go.etcd.io/etcd", "etcdmain")
+var plog = capnslog.NewPackageLogger("lucastetreault/did-tangaroa", "etcdmain")
 
 var (
 	dirMember = dirType("member")

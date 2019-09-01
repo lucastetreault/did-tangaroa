@@ -14,7 +14,7 @@
 
 package clientv3
 
-import pb "go.etcd.io/etcd/etcdserver/etcdserverpb"
+import pb "lucastetreault/did-tangaroa/etcdserver/etcdserverpb"
 
 type opType int
 

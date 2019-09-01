@@ -17,7 +17,7 @@ package embed
 import (
 	"path/filepath"
 
-	"go.etcd.io/etcd/wal"
+	"lucastetreault/did-tangaroa/wal"
 )
 
 func isMemberInitialized(cfg *Config) bool {

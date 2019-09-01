@@ -17,8 +17,8 @@
 // To use, first import the packages:
 //
 //	import (
-//		"go.etcd.io/etcd/clientv3"
-//		etcdnaming "go.etcd.io/etcd/clientv3/naming"
+//		"lucastetreault/did-tangaroa/clientv3"
+//		etcdnaming "lucastetreault/did-tangaroa/clientv3/naming"
 //
 //		"google.golang.org/grpc"
 //		"google.golang.org/grpc/naming"

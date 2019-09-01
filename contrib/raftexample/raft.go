@@ -21,18 +21,17 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"time"
 
-	"go.etcd.io/etcd/etcdserver/api/rafthttp"
-	"go.etcd.io/etcd/etcdserver/api/snap"
-	stats "go.etcd.io/etcd/etcdserver/api/v2stats"
-	"go.etcd.io/etcd/pkg/fileutil"
-	"go.etcd.io/etcd/pkg/types"
-	"go.etcd.io/etcd/raft"
-	"go.etcd.io/etcd/raft/raftpb"
-	"go.etcd.io/etcd/wal"
-	"go.etcd.io/etcd/wal/walpb"
+	"lucastetreault/did-tangaroa/etcdserver/api/rafthttp"
+	"lucastetreault/did-tangaroa/etcdserver/api/snap"
+	stats "lucastetreault/did-tangaroa/etcdserver/api/v2stats"
+	"lucastetreault/did-tangaroa/pkg/fileutil"
+	"lucastetreault/did-tangaroa/pkg/types"
+	"lucastetreault/did-tangaroa/raft"
+	"lucastetreault/did-tangaroa/raft/raftpb"
+	"lucastetreault/did-tangaroa/wal"
+	"lucastetreault/did-tangaroa/wal/walpb"
 
 	"go.uber.org/zap"
 )
@@ -44,7 +43,7 @@ type raftNode struct {
 	commitC     chan<- *string           // entries committed to log (k,v)
 	errorC      chan<- error             // errors from raft session
 
-	id          int      // client ID for raft session
+	id          string   // client ID for raft session
 	peers       []string // raft peer URLs
 	join        bool     // node is joining an existing cluster
 	waldir      string   // path to WAL directory
@@ -68,7 +67,9 @@ type raftNode struct {
 	transport *rafthttp.Transport
 	stopc     chan struct{} // signals proposal channel closed
 	httpstopc chan struct{} // signals http server to shutdown
-	httpdonec chan struct{} // signals http server shutdown complete
+	httpdonec chan struct{}
+	peerIds   []string
+	// signals http server shutdown complete
 }
 
 var defaultSnapshotCount uint64 = 10000
@@ -78,7 +79,7 @@ var defaultSnapshotCount uint64 = 10000
 // provided the proposal channel. All log entries are replayed over the
 // commit channel, followed by a nil message (to indicate the channel is
 // current), then new log entries. To shutdown, close proposeC and read errorC.
-func newRaftNode(id int, peers []string, join bool, getSnapshot func() ([]byte, error), proposeC <-chan string,
+func newRaftNode(id string, peerIds []string, peers []string, join bool, getSnapshot func() ([]byte, error), proposeC <-chan string,
 	confChangeC <-chan raftpb.ConfChange) (<-chan *string, <-chan error, <-chan *snap.Snapshotter) {
 
 	commitC := make(chan *string)
@@ -90,6 +91,7 @@ func newRaftNode(id int, peers []string, join bool, getSnapshot func() ([]byte, 
 		commitC:     commitC,
 		errorC:      errorC,
 		id:          id,
+		peerIds:     peerIds,
 		peers:       peers,
 		join:        join,
 		waldir:      fmt.Sprintf("raftexample-%d", id),
@@ -165,7 +167,7 @@ func (rc *raftNode) publishEntries(ents []raftpb.Entry) bool {
 					rc.transport.AddPeer(types.ID(cc.NodeID), []string{string(cc.Context)})
 				}
 			case raftpb.ConfChangeRemoveNode:
-				if cc.NodeID == uint64(rc.id) {
+				if cc.NodeID == rc.id {
 					log.Println("I've been removed from the cluster! Shutting down.")
 					return false
 				}
@@ -270,11 +272,11 @@ func (rc *raftNode) startRaft() {
 	rc.wal = rc.replayWAL()
 
 	rpeers := make([]raft.Peer, len(rc.peers))
-	for i := range rpeers {
-		rpeers[i] = raft.Peer{ID: uint64(i + 1)}
+	for i, pid := range rc.peerIds {
+		rpeers[i] = raft.Peer{ID: pid}
 	}
 	c := &raft.Config{
-		ID:                        uint64(rc.id),
+		ID:                        rc.id,
 		ElectionTick:              10,
 		HeartbeatTick:             1,
 		Storage:                   rc.raftStorage,
@@ -296,17 +298,18 @@ func (rc *raftNode) startRaft() {
 	rc.transport = &rafthttp.Transport{
 		Logger:      zap.NewExample(),
 		ID:          types.ID(rc.id),
-		ClusterID:   0x1000,
+		ClusterID:   "did:dtang:cAvWg9ryNwoTHexAxQsoL",
 		Raft:        rc,
 		ServerStats: stats.NewServerStats("", ""),
-		LeaderStats: stats.NewLeaderStats(strconv.Itoa(rc.id)),
+		LeaderStats: stats.NewLeaderStats(rc.id),
 		ErrorC:      make(chan error),
 	}
 
 	rc.transport.Start()
-	for i := range rc.peers {
-		if i+1 != rc.id {
-			rc.transport.AddPeer(types.ID(i+1), []string{rc.peers[i]})
+
+	for i, pid := range rc.peerIds {
+		if pid != rc.id {
+			rc.transport.AddPeer(types.ID(pid), []string{rc.peers[i]})
 		}
 	}
 
@@ -426,7 +429,7 @@ func (rc *raftNode) serveChannels() {
 		case <-ticker.C:
 			rc.node.Tick()
 
-		// store raft entries to wal, then publish over commit channel
+			// store raft entries to wal, then publish over commit channel
 		case rd := <-rc.node.Ready():
 			rc.wal.Save(rd.HardState, rd.Entries)
 			if !raft.IsEmptySnap(rd.Snapshot) {
@@ -455,7 +458,14 @@ func (rc *raftNode) serveChannels() {
 }
 
 func (rc *raftNode) serveRaft() {
-	url, err := url.Parse(rc.peers[rc.id-1])
+	var peerUrl string
+	for i, pid := range rc.peerIds {
+		if pid == rc.id {
+			peerUrl = rc.peers[i]
+		}
+	}
+
+	url, err := url.Parse(peerUrl)
 	if err != nil {
 		log.Fatalf("raftexample: Failed parsing URL (%v)", err)
 	}
@@ -477,6 +487,6 @@ func (rc *raftNode) serveRaft() {
 func (rc *raftNode) Process(ctx context.Context, m raftpb.Message) error {
 	return rc.node.Step(ctx, m)
 }
-func (rc *raftNode) IsIDRemoved(id uint64) bool                           { return false }
-func (rc *raftNode) ReportUnreachable(id uint64)                          {}
-func (rc *raftNode) ReportSnapshot(id uint64, status raft.SnapshotStatus) {}
+func (rc *raftNode) IsIDRemoved(id string) bool                           { return false }
+func (rc *raftNode) ReportUnreachable(id string)                          {}
+func (rc *raftNode) ReportSnapshot(id string, status raft.SnapshotStatus) {}

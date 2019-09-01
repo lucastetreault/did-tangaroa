@@ -14,7 +14,7 @@
 
 package mvcc
 
-import "go.etcd.io/etcd/lease"
+import "lucastetreault/did-tangaroa/lease"
 
 type metricsTxnWrite struct {
 	TxnWrite

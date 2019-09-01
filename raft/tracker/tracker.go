@@ -19,8 +19,8 @@ import (
 	"sort"
 	"strings"
 
-	"go.etcd.io/etcd/raft/quorum"
-	pb "go.etcd.io/etcd/raft/raftpb"
+	"lucastetreault/did-tangaroa/raft/quorum"
+	pb "lucastetreault/did-tangaroa/raft/raftpb"
 )
 
 // Config reflects the configuration tracked in a ProgressTracker.
@@ -39,7 +39,7 @@ type Config struct {
 	// learner it can't be in either half of the joint config. This invariant
 	// simplifies the implementation since it allows peers to have clarity about
 	// its current role without taking into account joint consensus.
-	Learners map[uint64]struct{}
+	Learners map[string]struct{}
 	// When we turn a voter into a learner during a joint consensus transition,
 	// we cannot add the learner directly when entering the joint state. This is
 	// because this would violate the invariant that the intersection of
@@ -74,7 +74,7 @@ type Config struct {
 	// also a voter in the joint config. In this case, the learner is added
 	// right away when entering the joint configuration, so that it is caught up
 	// as soon as possible.
-	LearnersNext map[uint64]struct{}
+	LearnersNext map[string]struct{}
 }
 
 func (c Config) String() string {
@@ -94,11 +94,11 @@ func (c Config) String() string {
 
 // Clone returns a copy of the Config that shares no memory with the original.
 func (c *Config) Clone() Config {
-	clone := func(m map[uint64]struct{}) map[uint64]struct{} {
+	clone := func(m map[string]struct{}) map[string]struct{} {
 		if m == nil {
 			return nil
 		}
-		mm := make(map[uint64]struct{}, len(m))
+		mm := make(map[string]struct{}, len(m))
 		for k := range m {
 			mm[k] = struct{}{}
 		}
@@ -119,7 +119,7 @@ type ProgressTracker struct {
 
 	Progress ProgressMap
 
-	Votes map[uint64]bool
+	Votes map[string]bool
 
 	MaxInflight int
 }
@@ -136,8 +136,8 @@ func MakeProgressTracker(maxInflight int) ProgressTracker {
 			Learners:     nil, // only populated when used
 			LearnersNext: nil, // only populated when used
 		},
-		Votes:    map[uint64]bool{},
-		Progress: map[uint64]*Progress{},
+		Votes:    map[string]bool{},
+		Progress: map[string]*Progress{},
 	}
 	return p
 }
@@ -159,12 +159,12 @@ func (p *ProgressTracker) IsSingleton() bool {
 	return len(p.Voters[0]) == 1 && len(p.Voters[1]) == 0
 }
 
-type matchAckIndexer map[uint64]*Progress
+type matchAckIndexer map[string]*Progress
 
 var _ quorum.AckedIndexer = matchAckIndexer(nil)
 
 // AckedIndex implements IndexLookuper.
-func (l matchAckIndexer) AckedIndex(id uint64) (quorum.Index, bool) {
+func (l matchAckIndexer) AckedIndex(id string) (quorum.Index, bool) {
 	pr, ok := l[id]
 	if !ok {
 		return 0, false
@@ -178,7 +178,7 @@ func (p *ProgressTracker) Committed() uint64 {
 	return uint64(p.Voters.CommittedIndex(matchAckIndexer(p.Progress)))
 }
 
-func insertionSort(sl []uint64) {
+func insertionSort(sl []string) {
 	a, b := 0, len(sl)
 	for i := a + 1; i < b; i++ {
 		for j := i; j > a && sl[j] < sl[j-1]; j-- {
@@ -188,17 +188,17 @@ func insertionSort(sl []uint64) {
 }
 
 // Visit invokes the supplied closure for all tracked progresses in stable order.
-func (p *ProgressTracker) Visit(f func(id uint64, pr *Progress)) {
+func (p *ProgressTracker) Visit(f func(id string, pr *Progress)) {
 	n := len(p.Progress)
 	// We need to sort the IDs and don't want to allocate since this is hot code.
 	// The optimization here mirrors that in `(MajorityConfig).CommittedIndex`,
 	// see there for details.
-	var sl [7]uint64
+	var sl [7]string
 	ids := sl[:]
 	if len(sl) >= n {
 		ids = sl[:n]
 	} else {
-		ids = make([]uint64, n)
+		ids = make([]string, n)
 	}
 	for id := range p.Progress {
 		n--
@@ -213,8 +213,8 @@ func (p *ProgressTracker) Visit(f func(id uint64, pr *Progress)) {
 // QuorumActive returns true if the quorum is active from the view of the local
 // raft state machine. Otherwise, it returns false.
 func (p *ProgressTracker) QuorumActive() bool {
-	votes := map[uint64]bool{}
-	p.Visit(func(id uint64, pr *Progress) {
+	votes := map[string]bool{}
+	p.Visit(func(id string, pr *Progress) {
 		if pr.IsLearner {
 			return
 		}
@@ -225,9 +225,9 @@ func (p *ProgressTracker) QuorumActive() bool {
 }
 
 // VoterNodes returns a sorted slice of voters.
-func (p *ProgressTracker) VoterNodes() []uint64 {
+func (p *ProgressTracker) VoterNodes() []string {
 	m := p.Voters.IDs()
-	nodes := make([]uint64, 0, len(m))
+	nodes := make([]string, 0, len(m))
 	for id := range m {
 		nodes = append(nodes, id)
 	}
@@ -236,11 +236,11 @@ func (p *ProgressTracker) VoterNodes() []uint64 {
 }
 
 // LearnerNodes returns a sorted slice of learners.
-func (p *ProgressTracker) LearnerNodes() []uint64 {
+func (p *ProgressTracker) LearnerNodes() []string {
 	if len(p.Learners) == 0 {
 		return nil
 	}
-	nodes := make([]uint64, 0, len(p.Learners))
+	nodes := make([]string, 0, len(p.Learners))
 	for id := range p.Learners {
 		nodes = append(nodes, id)
 	}
@@ -250,12 +250,12 @@ func (p *ProgressTracker) LearnerNodes() []uint64 {
 
 // ResetVotes prepares for a new round of vote counting via recordVote.
 func (p *ProgressTracker) ResetVotes() {
-	p.Votes = map[uint64]bool{}
+	p.Votes = map[string]bool{}
 }
 
 // RecordVote records that the node with the given id voted for this Raft
 // instance if v == true (and declined it otherwise).
-func (p *ProgressTracker) RecordVote(id uint64, v bool) {
+func (p *ProgressTracker) RecordVote(id string, v bool) {
 	_, ok := p.Votes[id]
 	if !ok {
 		p.Votes[id] = v

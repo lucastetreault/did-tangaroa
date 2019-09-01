@@ -23,7 +23,7 @@ import (
 	"strings"
 	"testing"
 
-	"go.etcd.io/etcd/embed"
+	"lucastetreault/did-tangaroa/embed"
 	"sigs.k8s.io/yaml"
 )
 

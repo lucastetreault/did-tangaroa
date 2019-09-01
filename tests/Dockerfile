@@ -39,8 +39,8 @@ RUN rm -rf ${GOROOT} \
   && mkdir -p ${GOPATH}/src ${GOPATH}/bin \
   && go version
 
-RUN mkdir -p ${GOPATH}/src/go.etcd.io/etcd
-WORKDIR ${GOPATH}/src/go.etcd.io/etcd
+RUN mkdir -p ${GOPATH}/src/lucastetreault/did-tangaroa
+WORKDIR ${GOPATH}/src/lucastetreault/did-tangaroa
 
 ADD ./scripts/install-marker.sh /tmp/install-marker.sh
 

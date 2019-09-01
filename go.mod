@@ -1,4 +1,4 @@
-module go.etcd.io/etcd
+module lucastetreault/did-tangaroa
 
 require (
 	github.com/bgentry/speakeasy v0.1.0

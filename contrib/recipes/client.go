@@ -18,8 +18,8 @@ import (
 	"context"
 	"errors"
 
-	v3 "go.etcd.io/etcd/clientv3"
-	spb "go.etcd.io/etcd/mvcc/mvccpb"
+	v3 "lucastetreault/did-tangaroa/clientv3"
+	spb "lucastetreault/did-tangaroa/mvcc/mvccpb"
 )
 
 var (
