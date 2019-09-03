@@ -1,0 +1,4 @@
+# Use goreman to run `go get github.com/mattn/goreman`
+dtang1: ./dtang --genesis=true --id did:dtang:PrXu9eu9ZPxqNSf628sRLC --address http://127.0.0.1:12379 --port 12380
+# dtang2: ./dtang --id did:dtang:KC9Ge3FkPyDxc9JBDFZpMP --clusterIds did:dtang:PrXu9eu9ZPxqNSf628sRLC,did:dtang:KC9Ge3FkPyDxc9JBDFZpMP,did:dtang:RngiJcdJE1cNCXwTE6pwmu --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 22380
+# dtang3: ./dtang --id did:dtang:RngiJcdJE1cNCXwTE6pwmu --clusterIds did:dtang:PrXu9eu9ZPxqNSf628sRLC,did:dtang:KC9Ge3FkPyDxc9JBDFZpMP,did:dtang:RngiJcdJE1cNCXwTE6pwmu --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 32380

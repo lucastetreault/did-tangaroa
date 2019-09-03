@@ -324,7 +324,7 @@ func (n *node) run() {
 				if lead == None {
 					r.logger.Infof("raft.node: %s elected leader %s at term %d", r.id, r.lead, r.Term)
 				} else {
-					r.logger.Infof("raft.node: %s changed leader from %s to %x at term %d", r.id, lead, r.lead, r.Term)
+					r.logger.Infof("raft.node: %s changed leader from %s to %s at term %d", r.id, lead, r.lead, r.Term)
 				}
 				propc = n.propc
 			} else {
@@ -405,7 +405,7 @@ func (n *node) Tick() {
 	case n.tickc <- struct{}{}:
 	case <-n.done:
 	default:
-		n.rn.raft.logger.Warningf("%x (leader %v) A tick missed to fire. Node blocks too long!", n.rn.raft.id, n.rn.raft.id == n.rn.raft.lead)
+		n.rn.raft.logger.Warningf("%s (leader %v) A tick missed to fire. Node blocks too long!", n.rn.raft.id, n.rn.raft.id == n.rn.raft.lead)
 	}
 }
 

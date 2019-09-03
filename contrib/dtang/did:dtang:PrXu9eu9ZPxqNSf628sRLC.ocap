@@ -1,0 +1,12 @@
+{
+    "id": "222c0767-c787-4e45-9f1a-85e5fcd377c5",
+    "parentCapability": "did:dtang:TDmbP8PcfZS4rjHDtry2pW",
+    "invoker": "did:dtang:PrXu9eu9ZPxqNSf628sRLC#keys-1",
+    "proof": {
+        "created": "2019-09-03T05:05:04UTC",
+        "creator": "did:dtang:TDmbP8PcfZS4rjHDtry2pW#keys-1",
+        "proofPurpose": "capabilityDelegation",
+        "signatureValue": "lYbUafRzoZtOK0ZhJ8RxmnuZ6/pOZi0aWJ/c3hyOpxx7g+wq6Io9CfVzYu8S2rGJcSX+sD4I0dm01qnAhreKBw==",
+        "type": "Ed25519Signature2018"
+    }
+}

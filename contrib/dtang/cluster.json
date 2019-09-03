@@ -1,0 +1,29 @@
+{
+    "@context": "https://www.w3.org/2019/did/v1",
+    "id": "did:dtang:TDmbP8PcfZS4rjHDtry2pW",
+    "public_key": [
+        {
+            "id": "did:dtang:TDmbP8PcfZS4rjHDtry2pW#keys-1",
+            "type": "Ed25519VerificationKey2018",
+            "controller": "did:dtang:TDmbP8PcfZS4rjHDtry2pW",
+            "publicKeyBase58": "B5Xq25YLBFw2BMSPY4V8si3HPDXe5TUM2eZPhetDFmQo"
+        }
+    ],
+    "authentication": [
+        "did:dtang:TDmbP8PcfZS4rjHDtry2pW#keys-1"
+    ],
+    "service": [
+        {
+            "id": "did:dtang:PrXu9eu9ZPxqNSf628sRLC",
+            "type": "DtangClusterNode",
+            "serviceEndpoint": "http://127.0.0.1:12379"
+        }
+    ],
+    "created": "2019-09-03T05:05:04UTC",
+    "proof": {
+        "created": "2019-09-03T05:05:04UTC",
+        "creator": "did:dtang:TDmbP8PcfZS4rjHDtry2pW#keys-1",
+        "signatureValue": "lYbUafRzoZtOK0ZhJ8RxmnuZ6/pOZi0aWJ/c3hyOpxx7g+wq6Io9CfVzYu8S2rGJcSX+sD4I0dm01qnAhreKBw==",
+        "type": "Ed25519Signature2018"
+    }
+}

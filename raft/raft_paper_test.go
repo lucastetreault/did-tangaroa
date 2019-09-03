@@ -457,7 +457,7 @@ func TestLeaderCommitEntry(t *testing.T) {
 	sort.Sort(messageSlice(msgs))
 	for i, m := range msgs {
 		if w := uint64(i + 2); m.To != w {
-			t.Errorf("to = %x, want %x", m.To, w)
+			t.Errorf("to = %s, want %s", m.To, w)
 		}
 		if m.Type != pb.MsgApp {
 			t.Errorf("type = %v, want %v", m.Type, pb.MsgApp)

@@ -2772,12 +2772,12 @@ func TestRestoreWithLearner(t *testing.T) {
 	}
 	for _, n := range s.Metadata.ConfState.Voters {
 		if sm.prs.Progress[n].IsLearner {
-			t.Errorf("sm.Node %x isLearner = %s, want %t", n, sm.prs.Progress[n], false)
+			t.Errorf("sm.Node %s isLearner = %s, want %t", n, sm.prs.Progress[n], false)
 		}
 	}
 	for _, n := range s.Metadata.ConfState.Learners {
 		if !sm.prs.Progress[n].IsLearner {
-			t.Errorf("sm.Node %x isLearner = %s, want %t", n, sm.prs.Progress[n], true)
+			t.Errorf("sm.Node %s isLearner = %s, want %t", n, sm.prs.Progress[n], true)
 		}
 	}
 
@@ -2807,7 +2807,7 @@ func TestRestoreVoterToLearner(t *testing.T) {
 	sm := newTestRaft(3, []uint64{1, 2, 3}, 10, 1, storage)
 
 	if sm.isLearner {
-		t.Errorf("%x is learner, want not", sm.id)
+		t.Errorf("%s is learner, want not", sm.id)
 	}
 	if ok := sm.restore(s); !ok {
 		t.Error("restore failed unexpectedly")
@@ -2829,7 +2829,7 @@ func TestRestoreLearnerPromotion(t *testing.T) {
 	sm := newTestLearnerRaft(3, []uint64{1, 2}, []uint64{3}, 10, 1, storage)
 
 	if !sm.isLearner {
-		t.Errorf("%x is not learner, want yes", sm.id)
+		t.Errorf("%s is not learner, want yes", sm.id)
 	}
 
 	if ok := sm.restore(s); !ok {
@@ -2837,7 +2837,7 @@ func TestRestoreLearnerPromotion(t *testing.T) {
 	}
 
 	if sm.isLearner {
-		t.Errorf("%x is learner, want not", sm.id)
+		t.Errorf("%s is learner, want not", sm.id)
 	}
 }
 
@@ -3364,7 +3364,7 @@ func TestLeaderTransferToUpToDateNode(t *testing.T) {
 	lead := nt.peers[1].(*raft)
 
 	if lead.lead != 1 {
-		t.Fatalf("after election leader is %x, want 1", lead.lead)
+		t.Fatalf("after election leader is %s, want 1", lead.lead)
 	}
 
 	// Transfer leadership to 2.
@@ -3392,7 +3392,7 @@ func TestLeaderTransferToUpToDateNodeFromFollower(t *testing.T) {
 	lead := nt.peers[1].(*raft)
 
 	if lead.lead != 1 {
-		t.Fatalf("after election leader is %x, want 1", lead.lead)
+		t.Fatalf("after election leader is %s, want 1", lead.lead)
 	}
 
 	// Transfer leadership to 2.
@@ -3429,7 +3429,7 @@ func TestLeaderTransferWithCheckQuorum(t *testing.T) {
 	lead := nt.peers[1].(*raft)
 
 	if lead.lead != 1 {
-		t.Fatalf("after election leader is %x, want 1", lead.lead)
+		t.Fatalf("after election leader is %s, want 1", lead.lead)
 	}
 
 	// Transfer leadership to 2.
@@ -3456,7 +3456,7 @@ func TestLeaderTransferToSlowFollower(t *testing.T) {
 	nt.recover()
 	lead := nt.peers[1].(*raft)
 	if lead.prs.Progress[3].Match != 1 {
-		t.Fatalf("node 1 has match %x for node 3, want %x", lead.prs.Progress[3].Match, 1)
+		t.Fatalf("node 1 has match %s for node 3, want %s", lead.prs.Progress[3].Match, 1)
 	}
 
 	// Transfer leadership to 3 when node 3 is lack of log.
@@ -3479,7 +3479,7 @@ func TestLeaderTransferAfterSnapshot(t *testing.T) {
 
 	nt.recover()
 	if lead.prs.Progress[3].Match != 1 {
-		t.Fatalf("node 1 has match %x for node 3, want %x", lead.prs.Progress[3].Match, 1)
+		t.Fatalf("node 1 has match %s for node 3, want %s", lead.prs.Progress[3].Match, 1)
 	}
 
 	// Transfer leadership to 3 when node 3 is lack of snapshot.
@@ -3559,7 +3559,7 @@ func TestLeaderTransferIgnoreProposal(t *testing.T) {
 	}
 
 	if lead.prs.Progress[1].Match != 1 {
-		t.Fatalf("node 1 has match %x, want %x", lead.prs.Progress[1].Match, 1)
+		t.Fatalf("node 1 has match %s, want %s", lead.prs.Progress[1].Match, 1)
 	}
 }
 
